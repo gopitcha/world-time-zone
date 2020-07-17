@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f2db75c0-884c-4412-aad8-64815f5ba7bd" basePath="/timezone">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2acbc70e-db00-486f-9c0e-91569c2e6061" basePath="/api/timezone" >
+		<http:request-connection host="worldtimeapi.org"/>
+	</http:request-config>
+	<flow name="githubtestingFlow" doc:id="5804031b-ea79-4794-bcef-1b8b3779856f" >
+		<http:listener doc:name="Listener" doc:id="6cdba363-f1c5-4ec5-952c-c08a2a6f4fa7" config-ref="HTTP_Listener_config" path="/{resign}/{city}"/>
+		<http:request method="GET" doc:name="Request" doc:id="c505fff4-f468-4476-92c9-302bc4c8f757" config-ref="HTTP_Request_configuration" path="/{resign}/{city}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	city : attributes.uriParams.city,
+	resign : attributes.uriParams.resign
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>
